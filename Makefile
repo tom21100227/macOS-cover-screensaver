@@ -11,7 +11,7 @@ APPLE_ID ?=
 TEAM_ID ?=
 APP_PASSWORD ?=
 
-.PHONY: all resources build sign notarize install clean
+.PHONY: all resources build sign notarize install clean saver-template
 
 all: build
 
@@ -58,6 +58,13 @@ install: build
 	codesign --force --sign - ~/Library/Screen\ Savers/$(SAVER_NAME).saver
 	@echo "Installed to ~/Library/Screen Savers/"
 	@echo "Open System Settings > Screen Saver to select Tomtopia"
+
+# Build saver template for web app
+saver-template: build
+	mkdir -p web/static/saver-template
+	cp $(BUILD_DIR)/Release/$(SAVER_NAME).saver/Contents/MacOS/$(SAVER_NAME) web/static/saver-template/
+	cp $(BUILD_DIR)/Release/$(SAVER_NAME).saver/Contents/Info.plist web/static/saver-template/
+	@echo "Saver template copied to web/static/saver-template/"
 
 # Clean build artifacts
 clean:

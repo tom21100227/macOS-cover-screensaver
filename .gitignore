@@ -4,3 +4,9 @@
 .env
 .env.*
 !.env.example
+
+# Web app
+web/node_modules
+web/.svelte-kit
+web/static/saver-template
+.dev.vars
