@@ -1,0 +1,6 @@
+.DS_Store
+/build
+/Resources/covers
+.env
+.env.*
+!.env.example
