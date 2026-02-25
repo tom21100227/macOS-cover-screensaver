@@ -6,33 +6,33 @@ A web app where users connect their music libraries, preview an animated album c
 
 ```mermaid
 flowchart TD
-    A[User visits web app] --> B{Connect music service}
+    A["User visits web app"] --> B{"Connect music service"}
 
-    B -->|Apple Music| C[Fetch developer token<br/><code>/api/apple-token</code>]
-    C --> D[MusicKit JS authorize<br/>Apple sign-in popup]
-    D --> E[Fetch library albums<br/><code>/v1/me/library/albums</code>]
+    B -->|Apple Music| C["Fetch developer token\n/api/apple-token"]
+    C --> D["MusicKit JS authorize\nApple sign-in popup"]
+    D --> E["Fetch library albums\n/v1/me/library/albums"]
 
-    B -->|Spotify| F[Generate PKCE challenge]
-    F --> G[Redirect to Spotify auth]
-    G --> H[Callback receives auth code<br/><code>/callback?code=...</code>]
-    H --> I[Exchange code for token<br/>POST <code>/api/token</code>]
-    I --> J[Fetch saved albums<br/><code>/v1/me/albums</code>]
+    B -->|Spotify| F["Generate PKCE challenge"]
+    F --> G["Redirect to Spotify auth"]
+    G --> H["Callback receives auth code\n/callback?code=..."]
+    H --> I["Exchange code for token\nPOST /api/token"]
+    I --> J["Fetch saved albums\n/v1/me/albums"]
 
-    E --> K[Cover store<br/>deduplicated across services]
+    E --> K["Cover store\ndeduplicated across services"]
     J --> K
 
-    K --> L[Animated CoverGrid preview<br/>fly-in + infinite scroll]
-    L --> M[User clicks Build Screensaver]
+    K --> L["Animated CoverGrid preview\nfly-in + infinite scroll"]
+    L --> M["User clicks Build Screensaver"]
 
-    M --> N[Fetch saver template<br/>pre-built Mach-O binary + Info.plist]
-    N --> O[Download cover images as blobs<br/>batches of 10]
-    O --> P[JSZip assembles .saver bundle<br/>in browser]
-    P --> Q[Download TomtopiaSaver.zip]
+    M --> N["Fetch saver template\npre-built binary + Info.plist"]
+    N --> O["Download cover images as blobs\nbatches of 10"]
+    O --> P["JSZip assembles .saver bundle\nin browser"]
+    P --> Q["Download TomtopiaSaver.zip"]
 
-    Q --> R[User extracts zip]
-    R --> S[Double-click install script<br/><code>Install Tomtopia Screensaver.command</code>]
-    S --> T[Ad-hoc codesign + copy to<br/>~/Library/Screen Savers/]
-    T --> U[Screensaver available in<br/>System Settings]
+    Q --> R["User extracts zip"]
+    R --> S["Double-click install script"]
+    S --> T["Ad-hoc codesign + copy to\n~/Library/Screen Savers/"]
+    T --> U["Screensaver available in\nSystem Settings"]
 ```
 
 ## Architecture
@@ -40,20 +40,20 @@ flowchart TD
 ```mermaid
 graph LR
     subgraph Browser
-        UI[SvelteKit App<br/>SSR disabled]
-        MK[MusicKit JS v3]
-        SP[Spotify PKCE]
-        ZIP[JSZip]
+        UI["SvelteKit App\nSSR disabled"]
+        MK["MusicKit JS v3"]
+        SP["Spotify PKCE"]
+        ZIP["JSZip"]
     end
 
-    subgraph CF[Cloudflare Pages]
-        API[/api/apple-token<br/>ES256 JWT via jose]
-        STATIC[/saver-template/<br/>pre-built binary]
+    subgraph CF["Cloudflare Pages"]
+        API["/api/apple-token\nES256 JWT via jose"]
+        STATIC["/saver-template/\npre-built binary"]
     end
 
     subgraph External
-        AM[Apple Music API]
-        SA[Spotify API]
+        AM["Apple Music API"]
+        SA["Spotify API"]
     end
 
     UI --> API
